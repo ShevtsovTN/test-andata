@@ -3,9 +3,12 @@
     "description": "Test assignment for ANDATA company.",
     "type": "project",
     "license": "MIT",
+    "require": {
+        "php": "^8"
+    },
     "autoload": {
         "psr-4": {
-            "Shevtsovtn\\TestAndata\\": "/"
+            "Shevtsovtn\\TestAndata\\": "app/"
         }
     },
     "authors": [
@@ -14,6 +17,5 @@
             "email": "timur.shevtsov1984@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
-    "require": {}
+    "minimum-stability": "dev"
 }
