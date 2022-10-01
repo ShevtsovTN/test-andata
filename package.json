@@ -1,0 +1,27 @@
+{
+  "name": "test-andata",
+  "version": "1.0.0",
+  "description": "## Test Job (PHP/CSS/JS/SQL)",
+  "main": "/resources/js/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShevtsovTN/test-andata.git"
+  },
+  "keywords": [],
+  "author": "ShevtsovTN",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ShevtsovTN/test-andata/issues"
+  },
+  "homepage": "https://github.com/ShevtsovTN/test-andata#readme",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "bootstrap": "^5.2.1"
+  }
+}

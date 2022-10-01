@@ -4,11 +4,12 @@
     "type": "project",
     "license": "MIT",
     "require": {
-        "php": "^8"
+        "php": "^8",
+        "ext-mysqli": "*"
     },
     "autoload": {
         "psr-4": {
-            "Shevtsovtn\\TestAndata\\": "app/"
+            "App\\": "app/"
         }
     },
     "authors": [
