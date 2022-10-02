@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    RewriteCond %{REQUEST_URI} \.(css|jpg|gif|png|js|tif|tiff|ico)$
+    RewriteRule ^(.*)$ $1 [L,QSA]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$

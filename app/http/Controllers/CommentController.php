@@ -2,22 +2,41 @@
 
 namespace App\http\Controllers;
 
+use App\classes\Validator;
+use App\models\Comment;
+use App\services\CommentService;
 use Exception;
 
-class CommentController extends Controller
+class CommentController
 {
-    /**
-     * @throws Exception
-     */
-    public function indexAction()
-    {
-        $this->page = $this->view->render('index', ['title' => 'TEST']);
 
-        echo $this->getOutput();
+    private CommentService $service;
+    private Validator $validator;
+
+    public function __construct()
+    {
+        $this->validator = new Validator(Comment::$validate);
+        $this->service = new CommentService();
     }
 
-    public function createAction()
+    /**
+     * Получение списка комметариев
+     *
+     * @throws Exception
+     */
+    public function indexAction(array $params = []): array
     {
+        return $this->service->index($params);
+    }
 
+    /**
+     * Создание комментария
+     *
+     * @throws Exception
+     */
+    public function createAction(array $params = []): array
+    {
+        $params = $this->validator->validated($params);
+        return $this->service->create($params);
     }
 }

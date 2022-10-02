@@ -17,3 +17,10 @@
    * The code must be formatted according to PSR standards and commented out.
    * Any JS/CSS framework can be used. The template must be original.
    * During development, implement the MVC pattern.
+
+
+## For running app:
+* Run `composer install`
+* Create and run mySQL server and add mySQL server parameters to `configs/app`
+* Run `database/init.sql` for your db.
+* Use `php -S 127.0.0.1:8000 server.php` for running PHP server.

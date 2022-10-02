@@ -1,7 +1,5 @@
 <?php
 
-const SITE_URL = '/';
-
 define("BASE_PATH", dirname(__DIR__));
 
 const DB_HOST = '127.0.0.1';

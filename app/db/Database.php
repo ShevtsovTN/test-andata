@@ -18,6 +18,11 @@ class Database implements DatabaseInterface
 
     }
 
+    /**
+     * Получение экземпляра класса Database
+     *
+     * @return Database
+     */
     public static function getInstance(): Database
     {
         if (self::$_instance instanceof static) {
@@ -28,6 +33,8 @@ class Database implements DatabaseInterface
     }
 
     /**
+     * Соединение с БД
+     *
      * @throws Exception
      */
     public function setConnection(string $host, string $user, string $pass, string $dbName)
@@ -46,11 +53,22 @@ class Database implements DatabaseInterface
 
     }
 
+    /**
+     * Запрос в БД
+     *
+     * @param $sql
+     * @return mysqli_result|bool
+     */
     public function query($sql): mysqli_result|bool
     {
         return $this->ins_db->query($sql);
     }
 
+    /**
+     * Объект mysqli
+     *
+     * @return mysqli
+     */
     public function getInstanceDB(): mysqli
     {
         return $this->ins_db;

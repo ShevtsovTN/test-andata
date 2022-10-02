@@ -15,13 +15,14 @@ class Model
     protected array $where = [];
     protected string $from = '';
     protected string $limit = '';
+    protected array $orderBy = [];
     protected string $sql = '';
     protected string $typeSql = 'select';
 
     protected $data;
-    protected int $id;
+    protected $id;
 
-    public function __construct(int $id = null)
+    public function __construct($id = null)
     {
         $this->ins_db = Database::getInstance();
         $this->id = $id;
@@ -31,6 +32,12 @@ class Model
         }
     }
 
+    /**
+     * Установка условия SELECT
+     *
+     * @param $fields
+     * @return $this
+     */
     public function select($fields): static
     {
         if (is_array($fields)) {
@@ -44,18 +51,50 @@ class Model
         return $this;
     }
 
+    /**
+     * Установка условия FROM
+     *
+     * @param $table
+     * @return $this
+     */
     public function from($table = null): static
     {
         $this->from = $table?? $this->table;
         return $this;
     }
 
+    /**
+     * Установка условия LIMIT
+     *
+     * @param int $limit
+     * @return $this
+     */
     public function limit(int $limit): static
     {
         $this->limit = $limit;
         return $this;
     }
 
+    /**
+     * Установка условия ORDER BY
+     *
+     * @param array $orderBy
+     * @return $this
+     */
+    public function orderBy(array $orderBy = []): static
+    {
+        $this->orderBy = $orderBy;
+        return $this;
+    }
+
+    /**
+     * Установка условия WHERE
+     *
+     * @param $field
+     * @param $operator
+     * @param $value
+     * @return $this
+     */
     public function where($field, $operator = '', $value = ''): static
     {
         if (func_num_args() == 2) {
@@ -67,6 +106,11 @@ class Model
         return $this;
     }
 
+    /**
+     * Сохраниние модели
+     *
+     * @throws Exception
+     */
     public function save()
     {
         if ($this->id) {
@@ -96,11 +140,19 @@ class Model
                 }
                 $this->sql = rtrim($this->sql, ',') . ')';
                 $this->typeSql = 'insert';
+
                 return $this->execute();
             }
         }
     }
 
+    /**
+     * Удаление модели
+     *
+     * @param int $id
+     * @return array|int|void
+     * @throws Exception
+     */
     public function destroy(int $id)
     {
         if ($this->id) {
@@ -113,21 +165,61 @@ class Model
         }
     }
 
+    /**
+     * Подготовка строки FROM
+     *
+     * @return string
+     */
     public function fromPrepare(): string
     {
         return ' FROM ' . $this->from;
     }
 
+    /**
+     * Подготовка строки ORDER BY
+     *
+     * @return string
+     */
+    public function orderByPrepare(): string
+    {
+        $str = '';
+
+        if (!empty($this->orderBy)) {
+            $str .= sprintf(
+                ' ORDER BY `%s` %s',
+                array_key_first($this->orderBy),
+                strtoupper($this->orderBy[array_key_first($this->orderBy)])
+            );
+        }
+
+        return $str;
+    }
+
+    /**
+     * Подготовка строки LIMIT
+     *
+     * @return string
+     */
     public function limitPrepare(): string
     {
         return !empty($this->limit) ? ' LIMIT ' . $this->limit : '';
     }
 
+    /**
+     * Подготовка строки SELECT
+     *
+     * @return string
+     */
     public function selectPrepare(): string
     {
         return 'SELECT ' . implode(',', $this->select);
     }
 
+    /**
+     * Подготовка строки WHERE
+     *
+     * @return string
+     */
     public function wherePrepare(): string
     {
         $str = '';
@@ -146,19 +238,32 @@ class Model
         return $str;
     }
 
+    /**
+     * Метод сборки строки запроса в БД
+     *
+     * @return array|int|void
+     * @throws Exception
+     */
     public function get()
     {
-        $this->sql = $this->selectPrepare() . $this->fromPrepare() . $this->wherePrepare() . $this->limitPrepare();
+        $this->sql = $this->selectPrepare()
+            . $this->fromPrepare()
+            . $this->wherePrepare()
+            . $this->orderByPrepare()
+            . $this->limitPrepare();
         $this->typeSql = 'select';
+
         if ($this->sql) {
             return $this->execute();
         }
     }
 
     /**
+     * Метод запроса в БД
+     *
      * @throws Exception
      */
-    protected function execute()
+    protected function execute(): int|array
     {
         if ($this->sql) {
             switch ($this->typeSql) {
@@ -189,6 +294,7 @@ class Model
                     if (!$result) {
                         throw new Exception('Ошибка запроса');
                     }
+
                     return $this->ins_db->getInstanceDB()->insert_id;
             }
         }
@@ -196,6 +302,8 @@ class Model
     }
 
     /**
+     * Статический вызов методов all и find для получения всех и конкретной модели соответственно
+     *
      * @throws Exception
      */
     public static function __callStatic($name, $arguments)
@@ -203,7 +311,7 @@ class Model
         switch ($name) {
             case 'all':
                 $obj = new static;
-                return $obj->select(['*'])->from()->get();
+                return $obj->select(['*'])->from()->orderBy($arguments[0])->get();
             case 'find':
                 $obj = new static;
                 return $obj->select(['*'])->from()->where('id', $arguments[0])->get();
@@ -212,11 +320,24 @@ class Model
         }
     }
 
+    /**
+     * магический метод получения свойств модели
+     *
+     * @param string $name
+     * @return mixed|null
+     */
     public function __get(string $name)
     {
         return array_key_exists($name, $this->data) ? $this->data[$name] : null;
     }
 
+    /**
+     *  Магический метод переопределения свойства модели
+     *
+     * @param string $name
+     * @param $value
+     * @return void
+     */
     public function __set(string $name, $value)
     {
         $this->data[$name] = $value;

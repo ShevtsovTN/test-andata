@@ -20,12 +20,14 @@ class AppProvider
     }
 
     /**
+     * Запуск приложения (подключение к БД, обработка реквеста)
+     *
      * @throws ReflectionException
      * @throws Exception
      */
-    public function run(): void
+    public function run()
     {
         $this->db->setConnection(host: DB_HOST, user: DB_USER, pass: DB_PASSWORD, dbName: DB_NAME);
-        $this->router->processRequest();
+        return $this->router->processRequest();
     }
 }

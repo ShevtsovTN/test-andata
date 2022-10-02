@@ -2,15 +2,40 @@
 
 namespace App\services;
 
+use App\models\Comment;
+use Exception;
+
 class CommentService
 {
-    public function index(): array
+    /**
+     * Метод сервиса для получения комментариев
+     *
+     * @param array $data
+     * @return array
+     */
+    public function index(array $data): array
     {
-        return [];
+        return Comment::all(!empty($data['GET']) ? $data['GET'] : []);
     }
 
-    public function create(): array
+    /**
+     * Метод сервиса для создания комментария
+     *
+     * @throws Exception
+     */
+    public function create(array $data): array
     {
-        return [];
+        if (isset($data['POST'])) {
+            $comment = new Comment();
+            $comment->name = $data['POST']['name'];
+            $comment->email = $data['POST']['email'];
+            $comment->title = $data['POST']['title'];
+            $comment->content = $data['POST']['content'];
+            $comment->created_at = date('Y-m-d H:i:s');
+            $id = $comment->save();
+
+            return Comment::find($id);
+        }
+        throw new Exception('Wrong data for creating', 422);
     }
 }
