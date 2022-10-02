@@ -24,3 +24,10 @@
 * Create and run mySQL server and add mySQL server parameters to `configs/app`
 * Run `database/init.sql` for your db.
 * Use `php -S 127.0.0.1:8000 server.php` for running PHP server.
+
+## Описание:
+В данном проекта реализован паттерн MVC.
+Точка входа в приложение `public/index.php` далее AppProvider запускает подключение к БД и обработку запроса в Router.
+Router проверяет данные и запускает необходимый контроллер и метод согласно карте маршрутов `routes/routes.php`
+Если необходимо Контроллер валидирует запрос при помощи Validator передает данные в свой Service
+Service запускает модель для работы с БД.
