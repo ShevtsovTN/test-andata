@@ -57,6 +57,6 @@ class Router
                 }
             }
         }
-        throw new Exception('Page request!!!');
+        throw new Exception('Page request!!!', 404);
     }
 }
